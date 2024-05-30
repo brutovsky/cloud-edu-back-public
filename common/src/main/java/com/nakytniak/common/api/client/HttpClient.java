@@ -31,15 +31,15 @@ public class HttpClient {
 
     protected final HttpTransport httpTransport = new NetHttpTransport();
 
-    protected final ObjectMapper objectMapper;
-    protected final MediaType mediaType;
+    private final ObjectMapper objectMapper;
+    private final String mediaType;
     protected final int connectionTimeout;
     protected final int readTimeout;
 
     public HttpClient(final ObjectMapper objectMapper, final MediaType mediaType, final int connectionTimeout,
             final int readTimeout) {
-        this.objectMapper = objectMapper;
-        this.mediaType = mediaType;
+        this.objectMapper = objectMapper.copy();
+        this.mediaType = mediaType.getType();
         this.connectionTimeout = connectionTimeout;
         this.readTimeout = readTimeout;
     }
@@ -109,9 +109,8 @@ public class HttpClient {
                                 body.getClass(), e.getMessage()));
                     }
                 })
-                .map(contentString -> new ByteArrayContent(mediaType.toString(),
-                        contentString.getBytes(StandardCharsets.UTF_8)))
-                .orElseGet(() -> new ByteArrayContent(mediaType.toString(), new byte[]{}));
+                .map(contentString -> new ByteArrayContent(mediaType, contentString.getBytes(StandardCharsets.UTF_8)))
+                .orElseGet(() -> new ByteArrayContent(mediaType, new byte[]{}));
     }
 
 }

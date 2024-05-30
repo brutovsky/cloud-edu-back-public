@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class Mapping implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3799370827345097138L;
 
     private DataSourceVendor sourceVendor;
     private String query;

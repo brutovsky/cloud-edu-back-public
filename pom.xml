@@ -34,6 +34,7 @@
         <lombok.version>1.18.26</lombok.version>
         <google-cloud-nio.version>0.126.9</google-cloud-nio.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
+        <spotbugs-annotations.version>4.8.5</spotbugs-annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -54,5 +55,41 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs-annotations.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.8.5.0</version>
+                <configuration>
+                    <threshold>Low</threshold>
+                    <xmlOutput>true</xmlOutput>
+                    <failOnError>true</failOnError>
+                    <maxAllowedViolations>0</maxAllowedViolations>
+                    <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
+                    <xmlOutputDirectory>${project.build.directory}/spotbugs</xmlOutputDirectory>
+                    <excludeFilterFile>config/spotbugsFilter.xml</excludeFilterFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>analyze-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

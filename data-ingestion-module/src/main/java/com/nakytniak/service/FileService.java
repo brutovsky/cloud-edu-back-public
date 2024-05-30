@@ -34,6 +34,7 @@ public class FileService {
         final SchoolEntity school = schoolRepository.findBySchoolId(schoolId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("School %s does not exists", schoolId)));
         final String filename = request.getFile().getOriginalFilename();
+        assert filename != null;
         final FileType fileType = getType(filename);
         final String filepath = String.format(FILE_PATH_TEMPLATE, "files", schoolId, filename);
         final String uploadedFilename = cloudStorageService.uploadFile(request.getFile().getInputStream(), bucketName,
@@ -68,7 +69,7 @@ public class FileService {
     public URL downloadFile(final String schoolId, final String creatorId, final String filename) {
         final SchoolEntity school = schoolRepository.findBySchoolId(schoolId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("School %s does not exists", schoolId)));
-        final FileEntry file = fileEntryRepository.findBySchoolIdAndFilename(school.getId(), filename)
+        fileEntryRepository.findBySchoolIdAndFilename(school.getId(), filename)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("File %s does not exists", filename)));
         final String filepath = String.format(FILE_PATH_TEMPLATE, "files", schoolId, filename);
         return cloudStorageService.generateSignedUrl(bucketName, filepath);

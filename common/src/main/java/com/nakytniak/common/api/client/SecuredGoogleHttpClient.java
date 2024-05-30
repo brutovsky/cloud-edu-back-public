@@ -8,6 +8,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.IdTokenCredentials;
 import com.google.auth.oauth2.IdTokenProvider;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -62,6 +63,7 @@ public class SecuredGoogleHttpClient extends HttpClient {
         return newRequest;
     }
 
+    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     private IdTokenProvider getIdTokenProvider() throws IOException {
         final GoogleCredentials credentials =
                 GoogleCredentials.getApplicationDefault().createScoped(Collections.singleton(IAM_SCOPE));

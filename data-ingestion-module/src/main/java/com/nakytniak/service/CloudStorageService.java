@@ -25,7 +25,7 @@ public class CloudStorageService {
 
     private final StorageProvider storageProvider;
 
-    public static final String[] ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".csv"};
+    private static final String[] ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".csv"};
 
     public String uploadFile(final InputStream fileInputStream, final String bucketName, final String fileName) {
         final boolean extensionAllowed = checkFileExtension(fileName);

@@ -31,7 +31,6 @@ public class StorageProvider {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String accessToken = cred.getAccessToken().getTokenValue();
         return StorageOptions.newBuilder()
                 .setCredentials(cred)
                 .setProjectId(projectId).build()

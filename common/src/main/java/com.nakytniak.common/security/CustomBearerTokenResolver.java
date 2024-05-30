@@ -3,8 +3,6 @@ package com.nakytniak.common.security;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 
-import java.util.Enumeration;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CustomBearerTokenResolver implements BearerTokenResolver {
@@ -23,18 +21,6 @@ public class CustomBearerTokenResolver implements BearerTokenResolver {
             return null;
         }
         return authorization.substring(7);
-    }
-
-    private void printHeaders(HttpServletRequest request) {
-        final Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            Enumeration<String> headers = request.getHeaders(headerName);
-            while (headers.hasMoreElements()) {
-                String headerValue = headers.nextElement();
-                logger.log(Level.INFO, headerName + ": " + headerValue);
-            }
-        }
     }
 
 }
