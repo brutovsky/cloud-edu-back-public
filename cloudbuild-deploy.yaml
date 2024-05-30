@@ -1,0 +1,91 @@
+timeout: 1200s
+
+substitutions:
+  _VERSION_REF: ${BRANCH_NAME}-${SHORT_SHA}
+  _VERSION_BRANCH: ${_VERSION_REF//./-}
+  _VERSION_TAG: ${TAG_NAME//./-}
+  _VERSION_NAME: ${_VERSION_TAG:-$_VERSION_BRANCH}
+  _DATA_INGESTION_MODULE_VERSION_NAME: "1.1-SNAPSHOT"
+  _CLOUD_EDU_BACKEND_MODULE_VERSION_NAME: "1.1-SNAPSHOT"
+
+availableSecrets:
+  secretManager:
+    - versionName: ${_INSTANCE_CONNECTION_NAME_SECRET_VERSION_NAME}
+      env: INSTANCE_CONNECTION_NAME_VALUE
+
+steps:
+  - id: Fetch secret file
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        # Fetch the secret and write it to a file
+        gcloud secrets versions access latest --secret=security-definition-file > /workspace/deploy-module/src/main/resources/securityDefinition.json
+
+  - id: Build image
+    name: "gcr.io/cloud-builders/mvn"
+    env:
+      - 'API_GATEWAY_HOST=${_API_GATEWAY_SERVICE_NAME}'
+      - 'GCP_PROJECT_ID=${PROJECT_ID}'
+    entrypoint: "bash"
+    args:
+      - "-cue"
+      - |-
+        cat /workspace/deploy-module/src/main/resources/securityDefinition.json
+        mvn clean install
+
+  - id: Deploy Cloud Endpoints
+    name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-cue"
+      - |-
+        gcloud endpoints services deploy /workspace/deploy-module/target/swagger/swagger.yaml --project=${PROJECT_ID}
+
+  - id: Deploy data-ingestion-module the image to Cloud Run
+    name: "gcr.io/cloud-builders/gcloud"
+    secretEnv: [ 'INSTANCE_CONNECTION_NAME_VALUE' ]
+    entrypoint: "bash"
+    args:
+      - "-cue"
+      - |-
+        gcloud run deploy data-ingestion-app \
+          --image=gcr.io/${PROJECT_ID}/data-ingestion-app:${_DATA_INGESTION_MODULE_VERSION_NAME} \
+          --platform=managed \
+          --region=${_REGION} \
+          --no-allow-unauthenticated \
+          --service-account ${_INGESTION_APP_SERVICE_ACCOUNT} \
+          --add-cloudsql-instances $$INSTANCE_CONNECTION_NAME_VALUE
+
+  - id: Deploy cloud-edu-backend-module the image to Cloud Run
+    name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-cue"
+      - |-
+        gcloud run deploy cloud-edu-backend-app \
+          --image=gcr.io/${PROJECT_ID}/cloud-edu-backend-app:${_CLOUD_EDU_BACKEND_MODULE_VERSION_NAME} \
+          --platform=managed \
+          --region=${_REGION} \
+          --no-allow-unauthenticated
+
+  - id: Build API Gateway ESPv2 docker image
+    name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        export ENDPOINTS_CONFIG_ID=$(gcloud endpoints configs list --service=${_API_GATEWAY_SERVICE_NAME} --sort-by=~creationTimestamp --limit=1 --format='value(id)')
+        echo $$ENDPOINTS_CONFIG_ID
+        chmod +x ./gcloud_build_image.sh
+        ./gcloud_build_image.sh -s ${_API_GATEWAY_SERVICE_NAME} -c $$ENDPOINTS_CONFIG_ID -p ${PROJECT_ID}
+
+  - id: Deploy API Gateway ESPv2
+    name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        export ENDPOINTS_CONFIG_ID=$(gcloud endpoints configs list --service=${_API_GATEWAY_SERVICE_NAME} --sort-by=~creationTimestamp --limit=1 --format='value(id)')
+        gcloud run deploy ${_API_GATEWAY_CLOUD_RUN_NAME} --image="gcr.io/${PROJECT_ID}/endpoints-runtime-serverless:${_ESP_VERSION}-${_API_GATEWAY_SERVICE_NAME}-$$ENDPOINTS_CONFIG_ID" --allow-unauthenticated --platform managed --project=${PROJECT_ID} --service-account=${_API_GATEWAY_SERVICE_ACCOUNT} --region=${_REGION} --set-env-vars=ESPv2_ARGS=--cors_preset=basic

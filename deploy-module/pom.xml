@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.nakytniak</groupId>
+        <artifactId>cloud-edu-back</artifactId>
+        <version>1.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>deploy-module</artifactId>
+    <version>1.1-SNAPSHOT</version>
+
+    <properties>
+        <api-gateway.host>${env.API_GATEWAY_HOST}</api-gateway.host>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.nakytniak</groupId>
+            <artifactId>cloud-edu-backend-module</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nakytniak</groupId>
+            <artifactId>data-ingestion-module</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>3.1.5</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>true</springmvc>
+                            <locations>
+                                <location>com.nakytniak.backend.controller</location>
+                                <location>com.nakytniak.controller</location>
+                            </locations>
+                            <schemes>
+                                <scheme>http</scheme>
+                                <scheme>https</scheme>
+                            </schemes>
+                            <host>${api-gateway.host}</host>
+                            <basePath>/api</basePath>
+                            <info>
+                                <title>Cloud EDU API</title>
+                                <version>v1</version>
+                                <description>Cloud EDU rest endpoints</description>
+                            </info>
+                            <outputFormats>yaml</outputFormats>
+                            <swaggerDirectory>${project.build.directory}/swagger</swaggerDirectory>
+                            <securityDefinitions>
+                                <securityDefinition>
+                                    <json>/securityDefinition.json</json>
+                                </securityDefinition>
+                            </securityDefinitions>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
