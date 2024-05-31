@@ -50,12 +50,12 @@ public class HttpClient {
             final String responseContent = getResponseContent(httpResponse.getContent());
             if (httpResponse.isSuccessStatusCode() && !responseContent.equals("")) {
                 log.info("Received response with status: [{}]", httpResponse.getStatusCode());
-                log.debug("Response body: [{}]", responseContent);
+                log.info("Response body: [{}]", responseContent);
                 return objectMapper.readValue(responseContent, responseType);
             } else {
                 log.warn("Unable to perform request: {}: {}.\nStatus: [{}], Response: [{}]",
                         request.getRequestMethod(), request.getUrl(), httpResponse.getStatusCode(), responseContent);
-                throw new ServerErrorException(httpResponse.getStatusMessage(), (Throwable) null);
+                throw new ServerErrorException(httpResponse.getStatusMessage(), null);
             }
         } catch (IOException e) {
             log.warn("Unable to perform request: [{}].", request.getUrl(), e);

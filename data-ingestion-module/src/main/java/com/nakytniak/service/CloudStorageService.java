@@ -27,7 +27,7 @@ public class CloudStorageService {
     private final StorageProvider storageProvider;
 
     private static final int SIGNED_URL_DURATION = 15;
-
+    public static final String FILE_PATH_TEMPLATE = "gs://%s/%s";
     private static final String[] ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".csv", ".json"};
 
     public String uploadFile(final InputStream fileInputStream, final String bucketName, final String fileName) {
@@ -38,11 +38,11 @@ public class CloudStorageService {
                     fileName.substring(fileName.lastIndexOf('.')), Arrays.toString(ALLOWED_EXTENSIONS)));
         }
 
-        @SuppressWarnings("deprecation") final BlobInfo blobInfo = storage.create(
-                BlobInfo.newBuilder(bucketName, fileName).build(), fileInputStream);
-        logger.log(Level.INFO, "Uploaded file {0} as {1}", new Object[]{fileName, blobInfo.getName()});
+        final BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, fileName).build();
+        @SuppressWarnings("deprecation") final BlobInfo newBlobInfo = storage.create(blobInfo, fileInputStream);
+        logger.log(Level.INFO, "Uploaded file {0} as {1}", new Object[]{fileName, newBlobInfo.getName()});
 
-        return blobInfo.getName();
+        return String.format(FILE_PATH_TEMPLATE, bucketName, newBlobInfo.getName());
     }
 
     public URL generateSignedUrl(final String bucketName, final String objectName) {

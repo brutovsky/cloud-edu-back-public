@@ -41,14 +41,14 @@ public class FileService {
         }
         final FileType fileType = getType(filename);
         final String filepath = String.format(FILE_PATH_TEMPLATE, "files", schoolId, filename);
-        final String uploadedFilename = cloudStorageService.uploadFile(request.getFile().getInputStream(), bucketName,
+        final String uploadedFullPath = cloudStorageService.uploadFile(request.getFile().getInputStream(), bucketName,
                 filepath);
         FileEntry fileEntry = FileEntry.builder()
                 .schoolId(school.getId())
                 .creatorId(creatorId)
                 .filename(filename)
                 .filepath(filepath)
-                .fullpath(uploadedFilename)
+                .fullpath(uploadedFullPath)
                 .type(fileType)
                 .build();
         fileEntry = fileEntryRepository.save(fileEntry);
