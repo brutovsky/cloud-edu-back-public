@@ -83,10 +83,10 @@ public class FileIngestionController {
     }
 
     @PreAuthorize(value = "hasAuthority('ADMIN')")
-    @CustomApiOperation(value = "getFileDownloadUrl", produces = APPLICATION_JSON, consumes = APPLICATION_JSON,
+    @CustomApiOperation(value = "deleteFile",
             authorizations = @Authorization(value = "auth0_jwk",
                     scopes = @AuthorizationScope(description = "Admin scope", scope = "admin:admin")))
-    @DeleteMapping(value = "/{filename}", produces = APPLICATION_JSON)
+    @DeleteMapping(value = "/{filename}")
     public ResponseEntity<Void> deleteFile(
             final @ApiParam(name = "schoolId", value = "ID of the school") @RequestParam String schoolId,
             final @ApiParam(name = "filename", value = "Name of file") @PathVariable String filename,
