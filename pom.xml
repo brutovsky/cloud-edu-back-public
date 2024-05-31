@@ -34,8 +34,11 @@
         <lombok.version>1.18.26</lombok.version>
         <google-cloud-nio.version>0.126.9</google-cloud-nio.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
+        <mockito.version>5.2.0</mockito.version>
+        <!--Plugins-->
         <spotbugs-annotations.version>4.8.5</spotbugs-annotations.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -115,6 +118,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <parallel>classes</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                </configuration>
             </plugin>
         </plugins>
     </build>

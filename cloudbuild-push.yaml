@@ -21,3 +21,14 @@ steps:
       - |-
         cat /workspace/deploy-module/src/main/resources/securityDefinition.json
         mvn clean compile
+
+  - id: Run unit tests
+    name: "gcr.io/cloud-builders/mvn"
+    env:
+      - 'API_GATEWAY_HOST=${_API_GATEWAY_SERVICE_NAME}'
+      - 'GCP_PROJECT_ID=${PROJECT_ID}'
+    entrypoint: "bash"
+    args:
+      - "-cue"
+      - |-
+        mvn test
