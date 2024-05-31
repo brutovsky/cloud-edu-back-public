@@ -1,5 +1,6 @@
 package com.nakytniak.service;
 
+import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.SignUrlOption;
@@ -27,7 +28,7 @@ public class CloudStorageService {
 
     private static final int SIGNED_URL_DURATION = 15;
 
-    private static final String[] ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".csv"};
+    private static final String[] ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".csv", ".json"};
 
     public String uploadFile(final InputStream fileInputStream, final String bucketName, final String fileName) {
         final boolean extensionAllowed = checkFileExtension(fileName);
@@ -46,12 +47,24 @@ public class CloudStorageService {
 
     public URL generateSignedUrl(final String bucketName, final String objectName) {
         final BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, objectName).build();
-        final Storage storage = storageProvider.createStorageService();
-        if (Objects.isNull(storage.get(blobInfo.getBlobId()))) {
-            throw new EntityNotFoundException(
-                    String.format("Storage object not found for blobInfo: %s", blobInfo.getBlobId()));
+        try (final Storage storage = storageProvider.createStorageService()) {
+            if (Objects.isNull(storage.get(blobInfo.getBlobId()))) {
+                throw new EntityNotFoundException(
+                        String.format("Storage object not found for blobInfo: %s", blobInfo.getBlobId()));
+            }
+            return storage.signUrl(blobInfo, SIGNED_URL_DURATION, TimeUnit.MINUTES, SignUrlOption.withV4Signature());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return storage.signUrl(blobInfo, SIGNED_URL_DURATION, TimeUnit.MINUTES, SignUrlOption.withV4Signature());
+    }
+
+    public boolean deleteFile(final String bucketName, final String filePath) {
+        final BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, filePath).build();
+        final BlobId blobId = blobInfo.getBlobId();
+        if (Objects.isNull(storage.get(blobId))) {
+            throw new EntityNotFoundException(String.format("Storage object not found for blobInfo: %s", blobId));
+        }
+        return storage.delete(blobId);
     }
 
     private boolean checkFileExtension(final String fileName) {

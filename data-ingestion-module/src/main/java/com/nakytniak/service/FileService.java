@@ -2,6 +2,7 @@ package com.nakytniak.service;
 
 import com.nakytniak.dto.UploadFileDto;
 import com.nakytniak.dto.UploadedFileDto;
+import com.nakytniak.exception.EntityAlreadyExistsException;
 import com.nakytniak.exception.EntityNotFoundException;
 import com.nakytniak.model.FileEntry;
 import com.nakytniak.model.FileType;
@@ -35,6 +36,9 @@ public class FileService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("School %s does not exists", schoolId)));
         final String filename = request.getFile().getOriginalFilename();
         assert filename != null;
+        if (fileEntryRepository.findBySchoolIdAndFilename(school.getId(), filename).isPresent()) {
+            throw new EntityAlreadyExistsException(String.format("File with name %s already exists", filename));
+        }
         final FileType fileType = getType(filename);
         final String filepath = String.format(FILE_PATH_TEMPLATE, "files", schoolId, filename);
         final String uploadedFilename = cloudStorageService.uploadFile(request.getFile().getInputStream(), bucketName,
@@ -57,6 +61,15 @@ public class FileService {
                 .fullpath(fileEntry.getFullpath())
                 .type(fileEntry.getType())
                 .build();
+    }
+
+    public void deleteFile(final String schoolId, final String creatorId, final String filename) {
+        final SchoolEntity school = schoolRepository.findBySchoolId(schoolId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("School %s does not exists", schoolId)));
+        final FileEntry fileEntry = fileEntryRepository.findBySchoolIdAndFilename(school.getId(), filename)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("File %s does not exists", filename)));
+        cloudStorageService.deleteFile(bucketName, fileEntry.getFilepath());
+        fileEntryRepository.delete(fileEntry);
     }
 
     public List<UploadedFileDto> getFiles(final String schoolId, final String creatorId) {

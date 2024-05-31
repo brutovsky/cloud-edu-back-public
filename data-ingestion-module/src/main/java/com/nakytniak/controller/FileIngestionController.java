@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,5 +80,21 @@ public class FileIngestionController {
             throw new AccessDeniedException(String.format("User does not have access to school [%s]", schoolId));
         }
         return ResponseEntity.ok(CoreResponse.of(fileService.downloadFile(schoolId, jwtUser.getName(), filename)));
+    }
+
+    @PreAuthorize(value = "hasAuthority('ADMIN')")
+    @CustomApiOperation(value = "getFileDownloadUrl", produces = APPLICATION_JSON, consumes = APPLICATION_JSON,
+            authorizations = @Authorization(value = "auth0_jwk",
+                    scopes = @AuthorizationScope(description = "Admin scope", scope = "admin:admin")))
+    @DeleteMapping(value = "/{filename}", produces = APPLICATION_JSON)
+    public ResponseEntity<Void> deleteFile(
+            final @ApiParam(name = "schoolId", value = "ID of the school") @RequestParam String schoolId,
+            final @ApiParam(name = "filename", value = "Name of file") @PathVariable String filename,
+            final JwtUser jwtUser) {
+        if (!JwtUtil.hasAccessToSchool(jwtUser, schoolId)) {
+            throw new AccessDeniedException(String.format("User does not have access to school [%s]", schoolId));
+        }
+        fileService.deleteFile(schoolId, jwtUser.getName(), filename);
+        return ResponseEntity.ok().build();
     }
 }

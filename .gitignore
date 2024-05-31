@@ -33,3 +33,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/cloud-edu-backend-module/src/main/resources/application-local.properties
+/data-ingestion-module/src/main/resources/application-local.properties

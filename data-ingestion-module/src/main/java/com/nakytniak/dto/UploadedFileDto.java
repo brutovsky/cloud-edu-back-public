@@ -18,4 +18,5 @@ public class UploadedFileDto {
     private String fullpath;
     private FileType type;
     private String creatorId;
+    private String creatorName;
 }
