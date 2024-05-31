@@ -53,7 +53,8 @@ public class ConfigIngestionController {
     @GetMapping(path = "/mappings")
     public ResponseEntity<CoreResponse<List<Mapping>>> getMappings(
             @ApiParam(name = "school", value = "School name")
-            @Parameter(description = "School name") @RequestParam(value = "school", required = false) final String school) {
+            @Parameter(description = "School name") @RequestParam(value = "school", required = false)
+            final String school) {
         return ResponseEntity.ok(
                 CoreResponse.of(
                         List.of(

@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 public class UserIdentityDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String connection;
-    
+
     @JsonProperty("user_id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String userId;
-    
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String provider;
-    
+
     @JsonProperty("isSocial")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private boolean isSocial;

@@ -17,7 +17,7 @@ public class JwtUser extends JwtAuthenticationToken {
 
     private final Set<String> schools;
 
-    public JwtUser(final Jwt jwt, Collection<? extends GrantedAuthority> authorities, final Set<String> school) {
+    public JwtUser(final Jwt jwt, final Collection<? extends GrantedAuthority> authorities, final Set<String> school) {
         super(jwt, authorities);
         this.schools = school == null ? Collections.emptySet() : new HashSet<>(school);
     }

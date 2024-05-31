@@ -10,7 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class JwtUtil {
+public final class JwtUtil {
+
+    private JwtUtil() {
+
+    }
+
     public static JwtUser createJwtUser(final Jwt jwt) {
         List<GrantedAuthority> authorities = new ArrayList<>();
 

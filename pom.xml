@@ -35,6 +35,7 @@
         <google-cloud-nio.version>0.126.9</google-cloud-nio.version>
         <google-cloud-bigquery.version>2.38.2</google-cloud-bigquery.version>
         <spotbugs-annotations.version>4.8.5</spotbugs-annotations.version>
+        <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -83,6 +84,32 @@
                     <execution>
                         <id>analyze-compile</id>
                         <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>config/sunChecks.xml</configLocation>
+                    <propertyExpansion>configRoot=config</propertyExpansion>
+                    <consoleOutput>true</consoleOutput>
+                    <enableRulesSummary>false</enableRulesSummary>
+                    <failOnViolation>true</failOnViolation>
+                    <failsOnError>false</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                        <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+                    </sourceDirectories>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>

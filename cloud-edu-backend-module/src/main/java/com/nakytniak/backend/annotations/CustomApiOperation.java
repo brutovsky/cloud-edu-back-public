@@ -31,7 +31,8 @@ public @interface CustomApiOperation {
     Extension[] extensions() default @Extension(
             name = "x-google-backend",
             properties = {
-                    @ExtensionProperty(name = "address", value = "https://cloud-edu-backend-app-qgvd3vvgha-uc.a.run.app"),
+                    @ExtensionProperty(name = "address",
+                            value = "https://cloud-edu-backend-app-qgvd3vvgha-uc.a.run.app"),
                     @ExtensionProperty(name = "path_translation", value = "APPEND_PATH_TO_ADDRESS")
             }
     );

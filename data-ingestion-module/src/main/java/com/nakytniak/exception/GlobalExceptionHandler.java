@@ -15,10 +15,10 @@ public class GlobalExceptionHandler {
     private final Logger logger = Logger.getLogger(GlobalExceptionHandler.class.getName());
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<com.nakytniak.common.api.CoreResponse<Object>> handleAnyRuntimeException(
+    public ResponseEntity<CoreResponse<Object>> handleAnyRuntimeException(
             final RuntimeException e) {
         logger.log(Level.SEVERE, "Error: {0}", new Object[]{e.getMessage()});
-        final com.nakytniak.common.api.CoreResponse<Object> errorResponse = com.nakytniak.common.api.CoreResponse.builder()
+        final CoreResponse<Object> errorResponse = CoreResponse.builder()
                 .errorMessage(e.getMessage())
                 .build();
         e.printStackTrace();
@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<com.nakytniak.common.api.CoreResponse<Object>> handleAnyException(final Exception e) {
+    public ResponseEntity<CoreResponse<Object>> handleAnyException(final Exception e) {
         logger.log(Level.SEVERE, "Error: {0}", new Object[]{e.getMessage()});
-        final com.nakytniak.common.api.CoreResponse<Object> errorResponse = CoreResponse.builder()
+        final CoreResponse<Object> errorResponse = CoreResponse.builder()
                 .errorMessage(e.getMessage())
                 .build();
         e.printStackTrace();

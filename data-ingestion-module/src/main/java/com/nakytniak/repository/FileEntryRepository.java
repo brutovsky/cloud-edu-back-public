@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface FileEntryRepository extends JpaRepository<FileEntry, Integer> {
-    List<FileEntry> findAllBySchoolId(final Integer schoolId);
+    List<FileEntry> findAllBySchoolId(Integer schoolId);
 
-    Optional<FileEntry> findBySchoolIdAndFilename(final Integer schoolId, final String filename);
+    Optional<FileEntry> findBySchoolIdAndFilename(Integer schoolId, String filename);
 }

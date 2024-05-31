@@ -25,6 +25,8 @@ public class CloudStorageService {
 
     private final StorageProvider storageProvider;
 
+    private static final int SIGNED_URL_DURATION = 15;
+
     private static final String[] ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".csv"};
 
     public String uploadFile(final InputStream fileInputStream, final String bucketName, final String fileName) {
@@ -49,7 +51,7 @@ public class CloudStorageService {
             throw new EntityNotFoundException(
                     String.format("Storage object not found for blobInfo: %s", blobInfo.getBlobId()));
         }
-        return storage.signUrl(blobInfo, 15, TimeUnit.MINUTES, SignUrlOption.withV4Signature());
+        return storage.signUrl(blobInfo, SIGNED_URL_DURATION, TimeUnit.MINUTES, SignUrlOption.withV4Signature());
     }
 
     private boolean checkFileExtension(final String fileName) {

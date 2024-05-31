@@ -47,8 +47,8 @@ public class TaskManagerClient {
     public CoreResponse<DataflowTaskDto> createTask(final String type, final String entityType, final String schoolId,
             final String filename) throws IOException {
         final HttpRequest request = googleHttpClient.createRequest(
-                taskManagerUrl + TASKS_ENDPOINT + "?schoolId=" + schoolId + "&entityType=" + entityType + "&type=" +
-                        type + "&filename=" + filename, HttpMethod.POST, null);
+                taskManagerUrl + TASKS_ENDPOINT + "?schoolId=" + schoolId + "&entityType=" + entityType + "&type="
+                        + type + "&filename=" + filename, HttpMethod.POST, null);
         log.info("request: {}", request);
         final CoreResponse<DataflowTaskDto> res = googleHttpClient.performRequest(request, new TypeReference<>() {
         });

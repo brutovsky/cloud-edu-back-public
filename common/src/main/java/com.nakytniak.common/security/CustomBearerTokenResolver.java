@@ -12,15 +12,18 @@ public class CustomBearerTokenResolver implements BearerTokenResolver {
     private static final String API_GATEWAY_JWT_PAYLOAD_HEADER_NAME = "X-Endpoint-API-UserInfo";
     private static final String API_GATEWAY_FORWARDED_AUTHENTICATION_HEADER_NAME = "X-Forwarded-Authorization";
 
-    // Info on X-Forwarded-Authorization: https://stackoverflow.com/questions/65952381/google-api-gateway-firebase-x-apigateway-api-userinfo-vs-x-forwarded-authoriz
+    @SuppressWarnings("LineLength")
+    // Info on X-Forwarded-Authorization:
+    //https://stackoverflow.com/questions/65952381/google-api-gateway-firebase-x-apigateway-api-userinfo-vs-x-forwarded-authoriz
     // Different headers on different envs
     @Override
     public String resolve(final HttpServletRequest request) {
+        final int bearerHeaderLength = 7;
         final String authorization = request.getHeader(API_GATEWAY_FORWARDED_AUTHENTICATION_HEADER_NAME);
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             return null;
         }
-        return authorization.substring(7);
+        return authorization.substring(bearerHeaderLength);
     }
 
 }

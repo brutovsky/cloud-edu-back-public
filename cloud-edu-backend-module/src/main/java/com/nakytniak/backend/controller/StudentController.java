@@ -37,6 +37,8 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    public static final int MAX_PAGE_SIZE = 25;
+
     @CustomApiOperation(value = "createStudent", produces = APPLICATION_JSON,
             authorizations = @Authorization(value = "auth0_jwk",
                     scopes = @AuthorizationScope(description = "Admin scope", scope = "admin:admin")))
@@ -72,9 +74,12 @@ public class StudentController {
     @GetMapping("/paginate")
     public ResponseEntity<CoreResponse<StudentsResponseDto>> getStudentsWithPagination(
             final @ApiParam(name = "schoolId", value = "ID of the school") @PathVariable String schoolId,
-            final @ApiParam(name = "pageSize", value = "Page size") @RequestParam(defaultValue = "5") @Min(1) @Max(25) Integer pageSize,
-            final @ApiParam(name = "cursorFirst", value = "Cursor first") @RequestParam(required = false) String cursorFirst,
-            final @ApiParam(name = "cursorLast", value = "Cursor last") @RequestParam(required = false) String cursorLast,
+            final @ApiParam(name = "pageSize", value = "Page size") @RequestParam(defaultValue = "5")
+            @Min(1) @Max(MAX_PAGE_SIZE) Integer pageSize,
+            final @ApiParam(name = "cursorFirst", value = "Cursor first") @RequestParam(required = false)
+            String cursorFirst,
+            final @ApiParam(name = "cursorLast", value = "Cursor last") @RequestParam(required = false)
+            String cursorLast,
             final JwtUser jwtUser) throws ExecutionException, InterruptedException {
         hasAccessToSchool(jwtUser, schoolId);
         return ResponseEntity.ok(

@@ -23,7 +23,7 @@ public enum MySqlDataType {
 
     private final String typeName;
 
-    MySqlDataType(String typeName) {
+    MySqlDataType(final String typeName) {
         this.typeName = typeName;
     }
 
@@ -32,7 +32,7 @@ public enum MySqlDataType {
     }
 
     // Optional: Custom method to check if a given type name matches any enum constant
-    public static MySqlDataType fromTypeName(String typeName) {
+    public static MySqlDataType fromTypeName(final String typeName) {
         for (MySqlDataType dataType : MySqlDataType.values()) {
             if (dataType.getTypeName().equalsIgnoreCase(typeName)) {
                 return dataType;

@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class DataflowJobInfo {
-    final String jobId;
-    final String currentState;
-    final LocalDateTime createDateTime;
-    final LocalDateTime startDateTime;
-    final Integer stagesCount;
-    final String jobName;
-    final String jobType;
+    private String jobId;
+    private String currentState;
+    private LocalDateTime createDateTime;
+    private LocalDateTime startDateTime;
+    private Integer stagesCount;
+    private String jobName;
+    private String jobType;
 }

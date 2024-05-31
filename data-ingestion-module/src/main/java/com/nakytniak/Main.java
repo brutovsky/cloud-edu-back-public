@@ -3,6 +3,7 @@ package com.nakytniak;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SuppressWarnings("HideUtilityClassConstructor")
 @SpringBootApplication
 public class Main {
 
@@ -11,4 +12,3 @@ public class Main {
     }
 
 }
-

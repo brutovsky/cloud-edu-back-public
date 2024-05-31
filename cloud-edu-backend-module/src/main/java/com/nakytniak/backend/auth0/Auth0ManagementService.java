@@ -36,7 +36,7 @@ public class Auth0ManagementService {
         final CreateAuth0User userToCreate = CreateAuth0User.builder()
                 .email(email)
                 .name("student")
-                .password(generateRandomPassword(12))
+                .password(generateRandomPassword())
                 .verifyEmail(true)
                 .emailVerified(false)
                 .connection("Username-Password-Authentication")
