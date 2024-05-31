@@ -47,7 +47,7 @@ public class CloudStorageService {
 
     public URL generateSignedUrl(final String bucketName, final String objectName) {
         final BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, objectName).build();
-        try (final Storage storage = storageProvider.createStorageService()) {
+        try (Storage storage = storageProvider.createStorageService()) {
             if (Objects.isNull(storage.get(blobInfo.getBlobId()))) {
                 throw new EntityNotFoundException(
                         String.format("Storage object not found for blobInfo: %s", blobInfo.getBlobId()));
