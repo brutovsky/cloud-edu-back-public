@@ -1,6 +1,10 @@
+/*
+ * Copyright myayo.world, Inc 2024-Present. All Rights Reserved.
+ * No unauthorized use of this software.
+ */
+
 package com.nakytniak.dto;
 
-import com.nakytniak.model.SchoolRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SchoolRegistrationInfo {
-    private Integer requestId;
+public class SchoolDto {
+    private Integer id;
     private String schoolId;
-    private SchoolRequestStatus schoolRequestStatus;
+    private String name;
 }

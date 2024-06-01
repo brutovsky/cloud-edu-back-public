@@ -57,11 +57,12 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/v1/public/**").permitAll()
+                        .requestMatchers("/v1/health").permitAll()
+                        .requestMatchers("/v1/schools/requests/new").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/v1/private/**").authenticated()
                         .requestMatchers("/v1/**").authenticated()
-                        .requestMatchers("/v1/health").permitAll()
                         .requestMatchers("/v1/private-scoped").hasAuthority("SCOPE_read:messages")
-                        .requestMatchers("/error").permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(JwtUtil::createJwtUser))
