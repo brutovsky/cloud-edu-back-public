@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/v1/**").authenticated()
                         .requestMatchers("/v1/health-cloud-edu-backend").permitAll()
+                        .requestMatchers("/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/error").permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

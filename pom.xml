@@ -23,6 +23,30 @@
         <module>deploy-module</module>
     </modules>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>artifact-registry</id>
+            <url>artifactregistry://us-central1-maven.pkg.dev/${env.GCP_PROJECT_ID}/cloud-edu-back-repo</url>
+        </snapshotRepository>
+        <repository>
+            <id>artifact-registry</id>
+            <url>artifactregistry://us-central1-maven.pkg.dev/${env.GCP_PROJECT_ID}/cloud-edu-back-repo</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>artifact-registry</id>
+            <url>artifactregistry://us-central1-maven.pkg.dev/${env.GCP_PROJECT_ID}/cloud-edu-back-repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <properties>
         <gcloud.appId>${env.GCP_PROJECT_ID}</gcloud.appId>
         <maven.compiler.source>17</maven.compiler.source>
@@ -130,6 +154,13 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>com.google.cloud.artifactregistry</groupId>
+                <artifactId>artifactregistry-maven-wagon</artifactId>
+                <version>2.2.0</version>
+            </extension>
+        </extensions>
     </build>
 
 </project>

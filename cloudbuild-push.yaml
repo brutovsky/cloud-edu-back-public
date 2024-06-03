@@ -1,5 +1,3 @@
-timeout: 600s
-
 steps:
   - id: Fetch secret file
     name: 'gcr.io/cloud-builders/gcloud'
@@ -8,7 +6,7 @@ steps:
       - '-c'
       - |
         # Fetch the secret and write it to a file
-        gcloud secrets versions access latest --secret=security-definition-file > /workspace/deploy-module/src/main/resources/securityDefinition.json
+        gcloud secrets versions access latest --secret=security-definition-file > ${_SECURITY_DEFINITION_PATH}
 
   - id: Compile image
     name: "gcr.io/cloud-builders/mvn"
@@ -32,3 +30,8 @@ steps:
       - "-cue"
       - |-
         mvn test
+
+timeout: 600s
+
+substitutions:
+  _SECURITY_DEFINITION_PATH: "/workspace/deploy-module/src/main/resources/securityDefinition.json"
